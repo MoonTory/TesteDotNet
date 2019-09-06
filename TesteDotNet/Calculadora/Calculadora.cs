@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Collections.Generic;
 
 using TesteDotNet.Calculadora.Exceções;
 using TesteDotNet.Calculadora.Utils;
@@ -10,7 +12,8 @@ namespace TesteDotNet.Calculadora
     public class Calculadora
     {
         public bool isRunning;
-        private int m_Resultado;
+        private double m_Resultado;
+        private double[] m_Parametros;
         public Calculadora()
         {
             isRunning = true;
@@ -24,46 +27,52 @@ namespace TesteDotNet.Calculadora
             {
                 try
                 {
-                    Console.WriteLine("Digite o numero da opcao da operacao que deseja realizar:\n");
+                    Console.WriteLine("Digite o numero da opção da operação que deseja realizar:\n");
                     Console.WriteLine("(1) - Soma");
-                    Console.WriteLine("(2) - Subtracao");
-                    Console.WriteLine("(3) - Multiplacao");
-                    Console.WriteLine("(4) - Divisao");
-                    Console.WriteLine("(5) - Media");
-                    Console.WriteLine("(6) - Soma Numeros Pares\n");
+                    Console.WriteLine("(2) - Subtraço");
+                    Console.WriteLine("(3) - Multiplicação");
+                    Console.WriteLine("(4) - Divisão");
+                    Console.WriteLine("(5) - Média");
+                    Console.WriteLine("(6) - Soma numeros pares");
+                    Console.WriteLine("(7) - Calcular valores armazendado em arquivo\n");
 
-                    Console.Write("Op: ");
+                    Console.Write("Opção: ");
                     ConsoleKeyInfo input = Console.ReadKey();
 
-                    Console.WriteLine("\n\nDigite os valores que deseja calcular, separando-os por \";\". EX: \"2;5\" ");
-
-                    int[] parametros = Array.ConvertAll(StringHelpers.FormatarEntrada(Console.ReadLine()), int.Parse);
+                    if (input.KeyChar !=  '7')
+                    {
+                        Console.WriteLine("\n\nDigite os valores que deseja calcular, separando-os por \";\". EX: \"2;5\" ");
+                        m_Parametros = Array.ConvertAll(StringHelpers.FormatarEntrada(Console.ReadLine()), double.Parse);
+                    }
 
                     switch (input.KeyChar)
                     {
                         case '1':
-                            m_Resultado = Soma(parametros);
+                            m_Resultado = Soma(m_Parametros);
                             Console.WriteLine($"\nResultado Soma: {m_Resultado}");
                             break;
                         case '2':
-                            m_Resultado = Subtrair(parametros[0], parametros[1]);
-                            Console.WriteLine($"\nResultado Subtracao: {m_Resultado}");
+                            m_Resultado = Subtrair(m_Parametros[0], m_Parametros[1]);
+                            Console.WriteLine($"\nResultado Subtração: {m_Resultado}");
                             break;
                         case '3':
-                            m_Resultado = Multiplcar(parametros[0], parametros[1]);
-                            Console.WriteLine($"\nResultado Multiplcacao: {m_Resultado}");
+                            m_Resultado = Multiplicar(m_Parametros[0], m_Parametros[1]);
+                            Console.WriteLine($"\nResultado Multiplcação: {m_Resultado}");
                             break;
                         case '4':
-                            m_Resultado = Dividir(parametros[0], parametros[1]);
-                            Console.WriteLine($"\nResultado Divisao: {m_Resultado}");
+                            m_Resultado = Dividir(m_Parametros[0], m_Parametros[1]);
+                            Console.WriteLine($"\nResultado Divisão: {m_Resultado}");
                             break;
                         case '5':
-                            m_Resultado = Media(parametros);
-                            Console.WriteLine($"\nResultado: {m_Resultado}");
+                            m_Resultado = Media(m_Parametros);
+                            Console.WriteLine($"\nResultado Média: {m_Resultado}");
                             break;
                         case '6':
-                            m_Resultado = SomaPares(parametros);
-                            Console.WriteLine($"\nResultado: {m_Resultado}");
+                            m_Resultado = SomaPares(m_Parametros);
+                            Console.WriteLine($"\nResultado Soma dos Pares: {m_Resultado}");
+                            break;
+                        case '7':
+                            CalcularValoresArmazenado();
                             break;
                         default:
                             throw new OperacaoInvalidoException();
@@ -83,14 +92,14 @@ namespace TesteDotNet.Calculadora
             Exit();
         }
 
-        public int Soma(int a, int b)
+        public double Soma(double a, double b)
         {
             return a + b;
         }
 
-        public int SomaPares(params int[] numbers)
+        public double SomaPares(params double[] numbers)
         {
-            int resultado = 0;
+            double resultado = 0;
             for (var i = 0; i < numbers.Length; i++)
             {
                 if (numbers[i] % 2 == 0)
@@ -100,33 +109,90 @@ namespace TesteDotNet.Calculadora
             return resultado;
         }
 
-        public int Soma(params int[] numbers)
+        public double Soma(params double[] numbers)
         {
             return numbers.Sum();
         }
 
-        public int Subtrair(int a, int b)
+        public double Subtrair(double a, double b)
         {
             return a - b;
         }
 
-        public int Media(params int[] numbers)
+        public double Media(params double[] numbers)
         {
             return numbers.Sum() / numbers.Length;
         }
 
-        public int Multiplcar(int a, int b)
+        public double Multiplicar(double a, double b)
         {
             return a * b;
         }
 
-        public int Dividir(int a, int b)
+        public double Dividir(double a, double b)
         {
             if (b == 0)
                 throw new DividirPorZeroException(a, b);
 
             return a / b;
         }
+
+        public void CalcularValoresArmazenado()
+        {
+            var dictionario = new Dictionary<string, double>();
+            using (StreamReader reader = new StreamReader("dados.txt"))
+            {
+                string line = null;
+                while (null != (line = reader.ReadLine()))
+                {
+                   if (!String.IsNullOrEmpty(line))
+                    {
+                        string[] values = StringHelpers.FormatarEntrada(line);
+
+                        List<string> temp = new List<string>();
+
+                        for (int i = 2; i < values.Length; i++)
+                        {
+                            var index = i - 2;
+                            temp.Add(values[i]);
+                        }
+
+                        double[] parametros = Array.ConvertAll(temp.ToArray(), double.Parse);
+
+                        switch (values[1].ToLower())
+                        {
+                            case "soma":
+                                m_Resultado = Soma(parametros);
+                                dictionario.Add(values[0], m_Resultado);
+                                break;
+                            case "subtração":
+                                m_Resultado = Subtrair(parametros[0], parametros[1]);
+                                dictionario.Add(values[0], m_Resultado);
+                                break;
+                            case "multiplicação":
+                                m_Resultado = Multiplicar(parametros[0], parametros[1]);
+                                dictionario.Add(values[0], m_Resultado);
+                                break;
+                            case "divisão":
+                                m_Resultado = Dividir(parametros[0], parametros[1]);
+                                dictionario.Add(values[0], m_Resultado);
+                                break;
+                            default:
+                                break;
+                        }
+
+                    }
+                }
+
+                Console.WriteLine("\nResultados armazenado no dictionario\n");
+
+                foreach (var par in dictionario)
+                {
+                    Console.WriteLine($"Nome={par.Key} -> Resultado={par.Value}");
+                }
+            }
+        }
+    
 
         private void Exit()
         {
