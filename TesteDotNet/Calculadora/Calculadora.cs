@@ -11,12 +11,10 @@ namespace TesteDotNet.Calculadora
 {
     public class Calculadora
     {
-        public bool isRunning;
         private double m_Resultado;
         private double[] m_Parametros;
         public Calculadora()
         {
-            isRunning = true;
             Init();
         }
 
