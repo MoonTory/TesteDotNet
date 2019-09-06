@@ -18,78 +18,6 @@ namespace TesteDotNet.Calculadora
             Init();
         }
 
-        public void Init()
-        {
-            Console.WriteLine("Sejam bem vindos!!!");
-            do
-            {
-                try
-                {
-                    Console.WriteLine("Digite o numero da opção da operação que deseja realizar:\n");
-                    Console.WriteLine("(1) - Soma");
-                    Console.WriteLine("(2) - Subtraço");
-                    Console.WriteLine("(3) - Multiplicação");
-                    Console.WriteLine("(4) - Divisão");
-                    Console.WriteLine("(5) - Média");
-                    Console.WriteLine("(6) - Soma numeros pares");
-                    Console.WriteLine("(7) - Calcular valores armazendado em arquivo\n");
-
-                    Console.Write("Opção: ");
-                    ConsoleKeyInfo input = Console.ReadKey();
-
-                    if (input.KeyChar !=  '7')
-                    {
-                        Console.WriteLine("\n\nDigite os valores que deseja calcular, separando-os por \";\". EX: \"2;5\" ");
-                        m_Parametros = Array.ConvertAll(StringHelpers.FormatarEntrada(Console.ReadLine()), double.Parse);
-                    }
-
-                    switch (input.KeyChar)
-                    {
-                        case '1':
-                            m_Resultado = Soma(m_Parametros);
-                            Console.WriteLine($"\nResultado Soma: {m_Resultado}");
-                            break;
-                        case '2':
-                            m_Resultado = Subtrair(m_Parametros[0], m_Parametros[1]);
-                            Console.WriteLine($"\nResultado Subtração: {m_Resultado}");
-                            break;
-                        case '3':
-                            m_Resultado = Multiplicar(m_Parametros[0], m_Parametros[1]);
-                            Console.WriteLine($"\nResultado Multiplcação: {m_Resultado}");
-                            break;
-                        case '4':
-                            m_Resultado = Dividir(m_Parametros[0], m_Parametros[1]);
-                            Console.WriteLine($"\nResultado Divisão: {m_Resultado}");
-                            break;
-                        case '5':
-                            m_Resultado = Media(m_Parametros);
-                            Console.WriteLine($"\nResultado Média: {m_Resultado}");
-                            break;
-                        case '6':
-                            m_Resultado = SomaPares(m_Parametros);
-                            Console.WriteLine($"\nResultado Soma dos Pares: {m_Resultado}");
-                            break;
-                        case '7':
-                            CalcularValoresArmazenado();
-                            break;
-                        default:
-                            throw new OperacaoInvalidoException();
-                    }
-
-                    Console.WriteLine("\nPressione qualquer tecla para continuar ou ESC para sair...");
-                }
-                catch (Exception ex)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"\nExcecao: {ex.Message}\n");
-                    Console.ResetColor();
-                    Console.WriteLine("\nPressione qualquer tecla para continuar ou ESC para sair...");
-                }
-            } while (Console.ReadKey().Key != ConsoleKey.Escape);
-
-            Exit();
-        }
-
         public double Soma(double a, double b)
         {
             return a + b;
@@ -190,7 +118,83 @@ namespace TesteDotNet.Calculadora
                 }
             }
         }
-    
+
+        private void Init()
+        {
+            Console.WriteLine("Sejam bem vindos!!!");
+            do
+            {
+                try
+                {
+                    ImprimirOpcoes();
+                    ConsoleKeyInfo input = Console.ReadKey();
+
+                    if (input.KeyChar != '7')
+                    {
+                        Console.WriteLine("\n\nDigite os valores que deseja calcular, separando-os por \";\". EX: \"2;5\" ");
+                        m_Parametros = Array.ConvertAll(StringHelpers.FormatarEntrada(Console.ReadLine()), double.Parse);
+                    }
+
+                    switch (input.KeyChar)
+                    {
+                        case '1':
+                            m_Resultado = Soma(m_Parametros);
+                            Console.WriteLine($"\nResultado Soma: {m_Resultado}");
+                            break;
+                        case '2':
+                            m_Resultado = Subtrair(m_Parametros[0], m_Parametros[1]);
+                            Console.WriteLine($"\nResultado Subtração: {m_Resultado}");
+                            break;
+                        case '3':
+                            m_Resultado = Multiplicar(m_Parametros[0], m_Parametros[1]);
+                            Console.WriteLine($"\nResultado Multiplcação: {m_Resultado}");
+                            break;
+                        case '4':
+                            m_Resultado = Dividir(m_Parametros[0], m_Parametros[1]);
+                            Console.WriteLine($"\nResultado Divisão: {m_Resultado}");
+                            break;
+                        case '5':
+                            m_Resultado = Media(m_Parametros);
+                            Console.WriteLine($"\nResultado Média: {m_Resultado}");
+                            break;
+                        case '6':
+                            m_Resultado = SomaPares(m_Parametros);
+                            Console.WriteLine($"\nResultado Soma dos Pares: {m_Resultado}");
+                            break;
+                        case '7':
+                            CalcularValoresArmazenado();
+                            break;
+                        default:
+                            throw new OperacaoInvalidoException();
+                    }
+
+                    Console.WriteLine("\nPressione qualquer tecla para continuar ou ESC para sair...");
+                }
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"\nExcecao: {ex.Message}\n");
+                    Console.ResetColor();
+                    Console.WriteLine("\nPressione qualquer tecla para continuar ou ESC para sair...");
+                }
+            } while (Console.ReadKey().Key != ConsoleKey.Escape);
+
+            Exit();
+        }
+
+        private void ImprimirOpcoes()
+        {
+            Console.WriteLine("Digite o numero da opção da operação que deseja realizar:\n");
+            Console.WriteLine("(1) - Soma");
+            Console.WriteLine("(2) - Subtraço");
+            Console.WriteLine("(3) - Multiplicação");
+            Console.WriteLine("(4) - Divisão");
+            Console.WriteLine("(5) - Média");
+            Console.WriteLine("(6) - Soma numeros pares");
+            Console.WriteLine("(7) - Calcular valores armazendado em arquivo\n");
+
+            Console.Write("Opção: ");
+        }
 
         private void Exit()
         {
