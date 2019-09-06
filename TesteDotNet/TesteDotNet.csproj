@@ -5,4 +5,14 @@
     <TargetFramework>netcoreapp2.2</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="dados.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="dados.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

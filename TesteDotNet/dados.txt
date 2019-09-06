@@ -1,0 +1,8 @@
+﻿José;Soma;10;2
+Adailtom;Divisão;10;2
+Raimundo;Multiplicação;10;2
+Antonio;Subtração;10;2
+Joaquim;Subtração;10;2
+Paula;Divisão;10;2
+
+Gustavo Oliveira Quinta;Soma;10;20;2;5;12 
